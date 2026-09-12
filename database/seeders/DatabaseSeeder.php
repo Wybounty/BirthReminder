@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'password' => Hash::make('test@example.com'),
         ]);
+
+        $this->call(BirthdaySeeder::class);
     }
 }
