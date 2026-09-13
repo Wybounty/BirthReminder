@@ -6,6 +6,7 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig, lazyPlugins } from 'vite-plus';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
     plugins: lazyPlugins(() => [
@@ -27,8 +28,49 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
+        VitePWA({
+            registerType: 'autoUpdate',
+
+            manifest: {
+                name: 'BirthReminder',
+                short_name: 'BirthReminder',
+                description: 'Gérez facilement vos anniversaires',
+
+                start_url: '/',
+                scope: '/',
+                display: 'standalone',
+
+                background_color: '#ffffff',
+                theme_color: '#ffffff',
+
+                lang: 'fr',
+
+                icons: [
+                    {
+                        src: '/pwa-192x192.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/pwa-512x512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                    },
+                ],
+            },
+
+            workbox: {
+                navigateFallback: '/',
+            },
+        }),
     ]),
     server: {
+        host: '0.0.0.0',
+        port: 5173,
+        origin: 'http://birthdayreminder.test:5173',
+        hmr: {
+            host: 'birthdayreminder.test',
+        },
         watch: {
             ignored: [
                 '**/.agents/**',

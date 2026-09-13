@@ -23,6 +23,26 @@ export default function Dashboard({ birthdays }: Props) {
             });
     };
 
+   const handleNotification = async () => {
+    if (!('Notification' in window)) {
+        toast.error('Les notifications ne sont pas supportées.');
+        return;
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+        toast.error('Les notifications sont désactivées.');
+        return;
+    }
+
+    new Notification('BirthReminder 🎂', {
+        body: 'Ceci est une notification de test !',
+        icon: '/pwa-192x192.png',
+    });
+};
+
+
     return (
         <>
             <Head title="Anniversaires" />
@@ -40,6 +60,9 @@ export default function Dashboard({ birthdays }: Props) {
                         <Link href="/birthday/create">
                             <Plus className="mr-2 h-4 w-4" /> Ajouter
                         </Link>
+                    </Button>
+                    <Button onClick={handleNotification}>
+                        Tester les notifications
                     </Button>
                 </div>
                 <div className="grid gap-3">
@@ -69,12 +92,17 @@ export default function Dashboard({ birthdays }: Props) {
                                     </p>
                                     <p className="text-muted-foreground text-sm">
                                         {(() => {
-                                            const birth = new Date(birthday.birth_date);
+                                            const birth = new Date(
+                                                birthday.birth_date,
+                                            );
                                             const today = new Date();
 
                                             const months =
-                                                (today.getFullYear() - birth.getFullYear()) * 12 +
-                                                (today.getMonth() - birth.getMonth());
+                                                (today.getFullYear() -
+                                                    birth.getFullYear()) *
+                                                    12 +
+                                                (today.getMonth() -
+                                                    birth.getMonth());
 
                                             return months < 12
                                                 ? `${months} mois`
